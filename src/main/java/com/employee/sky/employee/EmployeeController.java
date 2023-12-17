@@ -3,10 +3,7 @@ package com.employee.sky.employee;
 import com.employee.sky.employee.Exceptions.EmployeeAlreadyAddedException;
 import com.employee.sky.employee.Exceptions.EmployeeNotFoundException;
 import com.employee.sky.employee.Exceptions.EmployeeStorageIsFullException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +11,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
+    EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
+
 
     @GetMapping("/add")
     public String addEmployee(@RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname) {
 
 
         Employee employee = new Employee(firstname, lastname);
-        EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
+
+        int check = employeeServiceImpl.addEmployee(employee);
 
         try {
-            if (employeeServiceImpl.addEmployee(employee) == -1) {
+            if (check == -1) {
                 throw new EmployeeStorageIsFullException();
             }
-            if (employeeServiceImpl.addEmployee(employee) == 0) {
+            if (check == 0) {
                 throw new EmployeeAlreadyAddedException();
             }
         } catch (EmployeeStorageIsFullException e) {
@@ -35,6 +35,7 @@ public class EmployeeController {
             return "Этот сотрудник уже есть";
         }
 
+
         return "Сотрудник добавлен";
 
     }
@@ -42,14 +43,12 @@ public class EmployeeController {
     @GetMapping("/remove")
     public String remEmployee(@RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname) {
         Employee employee = new Employee(firstname, lastname);
-        EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
         return employeeServiceImpl.removeEmployee(employee);
     }
 
     @GetMapping("/seach")
     public String seachEmployee(@RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname) {
         Employee employee = new Employee(firstname, lastname);
-        EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
         try {
             if (employeeServiceImpl.seachEmployee(employee) == -1) {
                 throw new EmployeeNotFoundException();
@@ -63,7 +62,6 @@ public class EmployeeController {
     @GetMapping("/print")
     public String printBrowser () {
 
-        EmployeeServiceImpl employeeServiceImpl = new EmployeeServiceImpl();
         return employeeServiceImpl.printing();
     }
 

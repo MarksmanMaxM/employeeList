@@ -25,6 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public int addEmployee(Employee employee) {
         if (this.empList.contains(employee)) {
             System.out.println(this.empList.get(0));
+            System.out.println(employee);
             System.out.println(this.empList.contains(employee));
             return 0;
         }
